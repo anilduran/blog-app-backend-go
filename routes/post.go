@@ -54,6 +54,7 @@ func CreatePost(c *gin.Context) {
 	type CreatePostInput struct {
 		Title       string `form:"title" binding:"required"`
 		Description string `form:"description" binding:"required"`
+		Content     string `form:"content" binding:"required"`
 	}
 
 	var input CreatePostInput
@@ -68,6 +69,7 @@ func CreatePost(c *gin.Context) {
 	post := models.Post{
 		Title:       input.Title,
 		Description: input.Description,
+		Content:     input.Content,
 		AuthorID:    userId,
 	}
 
@@ -87,6 +89,7 @@ func UpdatePost(c *gin.Context) {
 	type UpdatePostInput struct {
 		Title       string `form:"title"`
 		Description string `form:"description"`
+		Content     string `form:"content"`
 	}
 
 	var input UpdatePostInput
@@ -115,6 +118,10 @@ func UpdatePost(c *gin.Context) {
 
 	if input.Description != "" {
 		post.Description = input.Description
+	}
+
+	if input.Content != "" {
+		post.Content = input.Content
 	}
 
 	result = db.DB.Save(&post)
@@ -149,5 +156,24 @@ func DeletePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, post)
+
+}
+
+func GetCommentsByPostID(c *gin.Context) {
+
+	id := c.Param("id")
+
+	var comments []models.Comment
+
+	result := db.DB.Where("post_id = ?", id).Find(&comments)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": comments,
+	})
 
 }

@@ -11,6 +11,13 @@ func RegisterRoutes(r *gin.Engine) {
 	auth.POST("/sign-in", SignIn)
 	auth.POST("/sign-up", SignUp)
 
+	me := r.Group("/api/me")
+	me.Use(middlewares.Auth)
+	me.GET("/", GetMyCredentials)
+	me.PUT("/", UpdateMyCredentials)
+	me.GET("/posts", GetMyPosts)
+	me.GET("/comments", GetMyComments)
+
 	category := r.Group("/api/categories")
 	category.Use(middlewares.Auth)
 	category.GET("/", GetCategories)
@@ -18,6 +25,7 @@ func RegisterRoutes(r *gin.Engine) {
 	category.POST("/", CreateCategory)
 	category.PUT("/:id", UpdateCategory)
 	category.DELETE("/:id", DeleteCategory)
+	category.GET("/:id/posts", GetPostsByCategoryID)
 
 	post := r.Group("/api/posts")
 	post.Use(middlewares.Auth)
@@ -26,6 +34,7 @@ func RegisterRoutes(r *gin.Engine) {
 	post.POST("/", CreatePost)
 	post.PUT("/:id", UpdatePost)
 	post.DELETE("/:id", DeletePost)
+	post.GET("/:id/comments", GetCommentsByPostID)
 
 	comment := r.Group("/api/comments")
 	comment.Use(middlewares.Auth)

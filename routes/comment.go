@@ -52,6 +52,7 @@ func CreateComment(c *gin.Context) {
 
 	type CreateCommentInput struct {
 		Content string `form:"content" binding:"required"`
+		PostID  uint   `form:"post_id" binding:"required"`
 	}
 
 	var input CreateCommentInput
@@ -63,7 +64,7 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 
-	comment := models.Comment{Content: input.Content, UserID: userId}
+	comment := models.Comment{Content: input.Content, UserID: userId, PostID: input.PostID}
 
 	result := db.DB.Create(&comment)
 
