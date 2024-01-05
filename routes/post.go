@@ -177,3 +177,28 @@ func GetCommentsByPostID(c *gin.Context) {
 	})
 
 }
+
+func GetAuthorByPostID(c *gin.Context) {
+
+	id := c.Param("id")
+
+	var post models.Post
+
+	result := db.DB.First(&post, id)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	var author models.User
+
+	result = db.DB.First(&author, post.AuthorID)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, author)
+}
