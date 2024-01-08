@@ -17,6 +17,8 @@ func RegisterRoutes(r *gin.Engine) {
 	me.PUT("/", UpdateMyCredentials)
 	me.GET("/posts", GetMyPosts)
 	me.GET("/comments", GetMyComments)
+	me.GET("/reading-lists", GetMyReadingLists)
+	me.GET("/bookmarks", GetMyBookmarks)
 
 	category := r.Group("/api/categories")
 	category.Use(middlewares.Auth)
@@ -36,6 +38,8 @@ func RegisterRoutes(r *gin.Engine) {
 	post.DELETE("/:id", DeletePost)
 	post.GET("/:id/comments", GetCommentsByPostID)
 	post.GET("/:id/author", GetAuthorByPostID)
+	post.POST("/:id/bookmark", BookmarkPost)
+	post.DELETE("/:id/bookmark", UnbookmarkPost)
 
 	comment := r.Group("/api/comments")
 	comment.Use(middlewares.Auth)

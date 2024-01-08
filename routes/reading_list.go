@@ -55,6 +55,7 @@ func CreateReadingList(c *gin.Context) {
 
 	if err := c.ShouldBind(&input); err != nil {
 		c.Status(http.StatusBadRequest)
+		return
 	}
 
 	readingList := models.ReadingList{

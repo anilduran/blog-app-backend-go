@@ -202,3 +202,73 @@ func GetAuthorByPostID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, author)
 }
+
+func BookmarkPost(c *gin.Context) {
+
+	userId := c.GetUint("userId")
+
+	var user models.User
+
+	result := db.DB.First(&user, userId)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	id := c.Param("id")
+
+	var post models.Post
+
+	result = db.DB.First(&post, id)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	err := db.DB.Model(&user).Association("Bookmarks").Append(&post)
+
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusCreated, post)
+
+}
+
+func UnbookmarkPost(c *gin.Context) {
+
+	userId := c.GetUint("userId")
+
+	var user models.User
+
+	result := db.DB.First(&user, userId)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	id := c.Param("id")
+
+	var post models.Post
+
+	result = db.DB.First(&post, id)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	err := db.DB.Model(&user).Association("Bookmarks").Delete(&post)
+
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, post)
+
+}

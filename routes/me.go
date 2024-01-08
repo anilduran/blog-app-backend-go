@@ -115,3 +115,41 @@ func GetMyComments(c *gin.Context) {
 	})
 
 }
+
+func GetMyReadingLists(c *gin.Context) {
+
+	userId := c.GetUint("userId")
+
+	var user models.User
+
+	result := db.DB.Preload("ReadingLists").First(&user, userId)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": user.ReadingLists,
+	})
+
+}
+
+func GetMyBookmarks(c *gin.Context) {
+
+	userId := c.GetUint("userId")
+
+	var user models.User
+
+	result := db.DB.Preload("Bookmarks").First(&user, userId)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": user.Bookmarks,
+	})
+
+}
