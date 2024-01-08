@@ -61,4 +61,15 @@ func RegisterRoutes(r *gin.Engine) {
 	role.PUT("/:id", UpdateRole)
 	role.DELETE("/:id", DeleteRole)
 
+	readingList := r.Group("/api/reading-lists")
+	readingList.Use(middlewares.Auth)
+	readingList.GET("/", GetReadingLists)
+	readingList.GET("/:id", GetReadingListByID)
+	readingList.POST("/", CreateReadingList)
+	readingList.PUT("/:id", UpdateReadingList)
+	readingList.DELETE("/:id", DeleteReadingList)
+	readingList.GET("/:id/posts", GetReadingListPosts)
+	readingList.POST("/:id/posts/:postId", AddPostToReadingList)
+	readingList.DELETE("/:id/posts/:postId", RemovePostFromReadingList)
+
 }
