@@ -12,6 +12,7 @@ type Post struct {
 	Comments          []Comment      `json:"comments"`
 	ReadingList       []*ReadingList `gorm:"many2many:reading_list_posts;" json:"reading_list"`
 	BookmarkedByUsers []*User        `gorm:"many2many:bookmarks;" json:"bookmarked_by_users"`
+	isActive          bool           `json:"is_active" gorm:"default:true"`
 	CreatedAt         *time.Time     `json:"created_at"`
 	UpdatedAt         *time.Time     `json:"updated_at"`
 	DeletedAt         *time.Time     `json:"deleted_at"`
