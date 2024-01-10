@@ -6,6 +6,7 @@ type ReadingList struct {
 	ID          uint       `gorm:"primary_key" json:"id"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
+	ImageUrl    string     `json:"image_url"`
 	Posts       []*Post    `gorm:"many2many:reading_list_posts;" json:"posts"`
 	UserID      uint       `json:"user_id"`
 	CreatedAt   *time.Time `json:"created_at"`

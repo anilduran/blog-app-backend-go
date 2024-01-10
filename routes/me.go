@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
@@ -150,6 +151,24 @@ func GetMyBookmarks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": user.Bookmarks,
+	})
+
+}
+
+func GetPresignedUrl(c *gin.Context) {
+
+	userId := c.GetUint("userId")
+
+	url, key, err := utils.PresignerInstance.PutObject(strconv.Itoa(int(userId)))
+
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"url": url,
+		"key": key,
 	})
 
 }

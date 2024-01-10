@@ -19,6 +19,7 @@ func RegisterRoutes(r *gin.Engine) {
 	me.GET("/comments", GetMyComments)
 	me.GET("/reading-lists", GetMyReadingLists)
 	me.GET("/bookmarks", GetMyBookmarks)
+	me.GET("/presigned-url", GetPresignedUrl)
 
 	category := r.Group("/api/categories")
 	category.Use(middlewares.Auth)
