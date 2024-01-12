@@ -100,11 +100,32 @@ func GetMyPosts(c *gin.Context) {
 
 func GetMyComments(c *gin.Context) {
 
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid page number",
+		})
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid limit number",
+		})
+		return
+	}
+
+	startIndex := int((page - 1) * limit)
+	endIndex := int(page * limit)
+
 	userId := c.GetUint("userId")
 
 	var comments []models.Comment
 
-	result := db.DB.Where("user_id = ?", userId).Find(&comments)
+	result := db.DB.Where("user_id = ?", userId).Offset(startIndex).Limit(endIndex).Find(&comments)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
@@ -119,11 +140,36 @@ func GetMyComments(c *gin.Context) {
 
 func GetMyReadingLists(c *gin.Context) {
 
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid page number",
+		})
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid limit number",
+		})
+		return
+	}
+
+	startIndex := int((page - 1) * limit)
+	endIndex := int(page * limit)
+
 	userId := c.GetUint("userId")
 
-	var user models.User
+	// var user models.User
 
-	result := db.DB.Preload("ReadingLists").First(&user, userId)
+	var readingLists []models.ReadingList
+
+	result := db.DB.Where("user_id = ?", userId).Offset(startIndex).Limit(endIndex).Find(&readingLists)
+
+	// result := db.DB.Preload("ReadingLists").First(&user, userId)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
@@ -131,7 +177,7 @@ func GetMyReadingLists(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": user.ReadingLists,
+		"data": readingLists,
 	})
 
 }

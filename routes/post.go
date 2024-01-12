@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
@@ -10,9 +11,30 @@ import (
 
 func GetPosts(c *gin.Context) {
 
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid page number",
+		})
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid limit number",
+		})
+		return
+	}
+
+	startIndex := int((page - 1) * limit)
+	endIndex := int(page * limit)
+
 	var posts []models.Post
 
-	result := db.DB.Find(&posts)
+	result := db.DB.Offset(startIndex).Limit(endIndex).Find(&posts)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
@@ -161,11 +183,32 @@ func DeletePost(c *gin.Context) {
 
 func GetCommentsByPostID(c *gin.Context) {
 
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid page number",
+		})
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid limit number",
+		})
+		return
+	}
+
+	startIndex := int((page - 1) * limit)
+	endIndex := int(page * limit)
+
 	id := c.Param("id")
 
 	var comments []models.Comment
 
-	result := db.DB.Where("post_id = ?", id).Find(&comments)
+	result := db.DB.Where("post_id = ?", id).Offset(startIndex).Limit(endIndex).Find(&comments)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)

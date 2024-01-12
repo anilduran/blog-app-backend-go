@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
@@ -11,9 +12,30 @@ import (
 
 func GetUsers(c *gin.Context) {
 
+	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid page number",
+		})
+		return
+	}
+
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Enter a valid limit number",
+		})
+		return
+	}
+
+	startIndex := int((page - 1) * limit)
+	endIndex := int(page * limit)
+
 	var users []models.User
 
-	result := db.DB.Find(&users)
+	result := db.DB.Offset(startIndex).Limit(endIndex).Find(&users)
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
