@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Category struct {
 	ID        uint       `gorm:"primary_key" json:"id"`
