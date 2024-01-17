@@ -7,6 +7,7 @@ import (
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetPosts(c *gin.Context) {
@@ -66,12 +67,7 @@ func GetPostByID(c *gin.Context) {
 
 func CreatePost(c *gin.Context) {
 
-	userId := c.GetUint("userId")
-
-	if userId == 0 {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	type CreatePostInput struct {
 		Title       string `form:"title" binding:"required"`

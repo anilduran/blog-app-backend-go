@@ -7,6 +7,7 @@ import (
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetCategories(c *gin.Context) {
@@ -51,7 +52,7 @@ func GetCategoryByID(c *gin.Context) {
 
 	var category models.Category
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	result := db.DB.First(&category, id)
 
@@ -109,7 +110,7 @@ func UpdateCategory(c *gin.Context) {
 
 	var category models.Category
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	result := db.DB.First(&category, id)
 
@@ -137,7 +138,7 @@ func DeleteCategory(c *gin.Context) {
 
 	var category models.Category
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	result := db.DB.First(&category, id)
 
@@ -159,7 +160,7 @@ func DeleteCategory(c *gin.Context) {
 
 func GetPostsByCategoryID(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	var posts []models.Post
 

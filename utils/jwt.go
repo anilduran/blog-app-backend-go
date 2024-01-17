@@ -5,11 +5,12 @@ import (
 	"os"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 var secret []byte
 
-func GenerateToken(userId uint, email string) (string, error) {
+func GenerateToken(userId uuid.UUID, email string) (string, error) {
 
 	secretString := os.Getenv("JWT_SECRET")
 
@@ -20,7 +21,7 @@ func GenerateToken(userId uint, email string) (string, error) {
 	secret = []byte(secretString)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": userId,
+		"userId": userId.String(),
 		"email":  email,
 	})
 
@@ -28,12 +29,12 @@ func GenerateToken(userId uint, email string) (string, error) {
 
 }
 
-func VerifyToken(token string) (uint, error) {
+func VerifyToken(token string) (uuid.UUID, error) {
 
 	secretString := os.Getenv("JWT_SECRET")
 
 	if secretString == "" {
-		return 0, errors.New("JWT_SECRET is not found")
+		return uuid.Nil, errors.New("JWT_SECRET is not found")
 	}
 
 	secret = []byte(secretString)
@@ -51,20 +52,20 @@ func VerifyToken(token string) (uint, error) {
 	})
 
 	if err != nil {
-		return 0, errors.New("couldn't parse token")
+		return uuid.Nil, errors.New("couldn't parse token")
 	}
 
 	if !parsedToken.Valid {
-		return 0, errors.New("token is not valid")
+		return uuid.Nil, errors.New("token is not valid")
 	}
 
 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 
 	if !ok {
-		return 0, errors.New("couldn't parse claims")
+		return uuid.Nil, errors.New("couldn't parse claims")
 	}
 
-	userId := uint(claims["userId"].(float64))
+	userId, _ := uuid.Parse(claims["userId"].(string))
 
 	return userId, nil
 

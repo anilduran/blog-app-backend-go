@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -30,7 +31,7 @@ func (presigner Presigner) PutObject(userId string) (string, string, error) {
 	key := "images/" + userId + "/" + id.String() + ".jpg"
 
 	request, err := presigner.PresignClient.PresignPutObject(context.TODO(), &s3.PutObjectInput{
-		Bucket: aws.String("anilduran-s3-bucket"),
+		Bucket: aws.String(os.Getenv("S3_BUCKET")),
 		Key:    aws.String(key),
 	}, func(opts *s3.PresignOptions) {
 		// link will be expired in 15 minutes

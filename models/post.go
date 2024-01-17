@@ -1,14 +1,19 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type Post struct {
-	ID                uint           `gorm:"primary_key" json:"id"`
+	ID                uuid.UUID      `gorm:"type:uuid;primary_key;" json:"id"`
 	ImageUrl          string         `json:"image_url"`
 	Title             string         `json:"title"`
 	Description       string         `json:"description"`
 	Content           string         `json:"content"`
-	AuthorID          uint           `json:"author_id"` // Foreign key (belongs to), tag `json:"author_id"` is optional
+	AuthorID          uuid.UUID      `json:"author_id"`
 	Categories        []*Category    `gorm:"many2many:post_categories;"`
 	Comments          []Comment      `json:"comments"`
 	ReadingList       []*ReadingList `gorm:"many2many:reading_list_posts;" json:"reading_list"`
@@ -17,4 +22,9 @@ type Post struct {
 	CreatedAt         *time.Time     `json:"created_at"`
 	UpdatedAt         *time.Time     `json:"updated_at"`
 	DeletedAt         *time.Time     `json:"deleted_at"`
+}
+
+func (post *Post) BeforeCreate(tx *gorm.DB) (err error) {
+	post.ID = uuid.New()
+	return
 }

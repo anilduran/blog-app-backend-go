@@ -8,11 +8,12 @@ import (
 	"example.com/blog-app-backend-go/models"
 	"example.com/blog-app-backend-go/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetMyCredentials(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	var user models.User
 
@@ -29,7 +30,7 @@ func GetMyCredentials(c *gin.Context) {
 
 func UpdateMyCredentials(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	type UpdateMyCredentialsInput struct {
 		Username string `form:"username"`
@@ -81,7 +82,7 @@ func UpdateMyCredentials(c *gin.Context) {
 
 func GetMyPosts(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	var posts []models.Post
 
@@ -121,7 +122,7 @@ func GetMyComments(c *gin.Context) {
 	startIndex := int((page - 1) * limit)
 	endIndex := int(page * limit)
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	var comments []models.Comment
 
@@ -161,7 +162,7 @@ func GetMyReadingLists(c *gin.Context) {
 	startIndex := int((page - 1) * limit)
 	endIndex := int(page * limit)
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	// var user models.User
 
@@ -184,7 +185,7 @@ func GetMyReadingLists(c *gin.Context) {
 
 func GetMyBookmarks(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	var user models.User
 
@@ -203,9 +204,9 @@ func GetMyBookmarks(c *gin.Context) {
 
 func GetPresignedUrl(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
-	url, key, err := utils.PresignerInstance.PutObject(strconv.Itoa(int(userId)))
+	url, key, err := utils.PresignerInstance.PutObject(userId.String())
 
 	if err != nil {
 		c.Status(http.StatusInternalServerError)

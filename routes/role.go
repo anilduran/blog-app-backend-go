@@ -6,6 +6,7 @@ import (
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetRoles(c *gin.Context) {
@@ -27,7 +28,7 @@ func GetRoles(c *gin.Context) {
 
 func GetRoleByID(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	var role models.Role
 
@@ -87,7 +88,7 @@ func UpdateRole(c *gin.Context) {
 
 	var role models.Role
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	result := db.DB.First(&role, id)
 
@@ -113,7 +114,7 @@ func UpdateRole(c *gin.Context) {
 
 func DeleteRole(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	var role models.Role
 

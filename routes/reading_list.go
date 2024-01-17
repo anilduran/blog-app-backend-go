@@ -7,6 +7,7 @@ import (
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetReadingLists(c *gin.Context) {
@@ -66,7 +67,7 @@ func GetReadingListByID(c *gin.Context) {
 
 func CreateReadingList(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, _ := uuid.Parse(c.GetString("userId"))
 
 	type CreateReadingListInput struct {
 		Name        string `form:"name" binding:"required"`

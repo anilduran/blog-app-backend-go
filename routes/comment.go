@@ -7,6 +7,7 @@ import (
 	"example.com/blog-app-backend-go/db"
 	"example.com/blog-app-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetComments(c *gin.Context) {
@@ -51,7 +52,12 @@ func GetCommentByID(c *gin.Context) {
 
 	var comment models.Comment
 
-	id := c.Param("id")
+	id, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
 
 	result := db.DB.First(&comment, id)
 
@@ -66,21 +72,20 @@ func GetCommentByID(c *gin.Context) {
 
 func CreateComment(c *gin.Context) {
 
-	userId := c.GetUint("userId")
+	userId, err := uuid.Parse(c.GetString("userId"))
 
-	if userId == 0 {
+	if err != nil {
 		c.Status(http.StatusUnauthorized)
-		return
 	}
 
 	type CreateCommentInput struct {
-		Content string `form:"content" binding:"required"`
-		PostID  uint   `form:"post_id" binding:"required"`
+		Content string    `form:"content" binding:"required"`
+		PostID  uuid.UUID `form:"post_id" binding:"required"`
 	}
 
 	var input CreateCommentInput
 
-	err := c.ShouldBind(&input)
+	err = c.ShouldBind(&input)
 
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -115,7 +120,14 @@ func UpdateComment(c *gin.Context) {
 		return
 	}
 
-	id := c.Param("id")
+	var id uuid.UUID
+
+	id, err = uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
 
 	var comment models.Comment
 
@@ -145,7 +157,12 @@ func UpdateComment(c *gin.Context) {
 
 func DeleteComment(c *gin.Context) {
 
-	id := c.Param("id")
+	id, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
 
 	var comment models.Comment
 

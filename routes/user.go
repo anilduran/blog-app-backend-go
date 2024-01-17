@@ -8,6 +8,7 @@ import (
 	"example.com/blog-app-backend-go/models"
 	"example.com/blog-app-backend-go/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func GetUsers(c *gin.Context) {
@@ -49,7 +50,7 @@ func GetUsers(c *gin.Context) {
 
 func GetUserByID(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	var user models.User
 
@@ -102,7 +103,7 @@ func CreateUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	type UpdateUserInput struct {
 		Username string `form:"username"`
@@ -154,7 +155,7 @@ func UpdateUser(c *gin.Context) {
 
 func DeleteUser(c *gin.Context) {
 
-	id := c.Param("id")
+	id, _ := uuid.Parse(c.Param("id"))
 
 	var user models.User
 
