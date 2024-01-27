@@ -44,7 +44,8 @@ func GetComments(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": comments,
+		"data":       comments,
+		"data_count": len(comments),
 	})
 }
 
@@ -182,4 +183,34 @@ func DeleteComment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, comment)
 
+}
+
+func GetAuthorByCommentID(c *gin.Context) {
+
+	var comment models.Comment
+
+	id, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	result := db.DB.First(&comment, id)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	var user models.User
+
+	result = db.DB.First(&user, comment.UserID)
+
+	if result.Error != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }

@@ -49,6 +49,7 @@ func RegisterRoutes(r *gin.Engine) {
 	comment.POST("/", CreateComment)
 	comment.PUT("/:id", UpdateComment)
 	comment.DELETE("/:id", DeleteComment)
+	comment.GET("/:id/author", GetAuthorByCommentID)
 
 	user := r.Group("/api/users")
 	user.Use(middlewares.Auth)

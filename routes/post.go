@@ -130,6 +130,13 @@ func UpdatePost(c *gin.Context) {
 		return
 	}
 
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if post.AuthorID != userId {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	if input.Title != "" {
 		post.Title = input.Title
 	}
@@ -160,6 +167,13 @@ func DeletePost(c *gin.Context) {
 	var post models.Post
 
 	result := db.DB.First(&post, id)
+
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if post.AuthorID != userId {
+		c.Status(http.StatusForbidden)
+		return
+	}
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)

@@ -56,6 +56,11 @@ func UpdateMyCredentials(c *gin.Context) {
 		return
 	}
 
+	if user.ID != userId {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	if input.Username != "" {
 		user.Username = input.Username
 	}

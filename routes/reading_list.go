@@ -120,6 +120,13 @@ func UpdateReadingList(c *gin.Context) {
 
 	result := db.DB.First(&readingList, id)
 
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if readingList.UserID != userId {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
@@ -154,6 +161,13 @@ func DeleteReadingList(c *gin.Context) {
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if readingList.UserID != userId {
+		c.Status(http.StatusForbidden)
 		return
 	}
 
@@ -200,6 +214,13 @@ func AddPostToReadingList(c *gin.Context) {
 		return
 	}
 
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if readingList.UserID != userId {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	postId := c.Param("postId")
 
 	var post models.Post
@@ -232,6 +253,13 @@ func RemovePostFromReadingList(c *gin.Context) {
 
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	userId, _ := uuid.Parse(c.GetString("userId"))
+
+	if readingList.UserID != userId {
+		c.Status(http.StatusForbidden)
 		return
 	}
 

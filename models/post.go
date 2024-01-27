@@ -14,7 +14,7 @@ type Post struct {
 	Description       string         `json:"description"`
 	Content           string         `json:"content"`
 	AuthorID          uuid.UUID      `json:"author_id"`
-	Categories        []*Category    `gorm:"many2many:post_categories;"`
+	Categories        []*Category    `gorm:"many2many:post_categories;" json:"categories"`
 	Comments          []Comment      `json:"comments"`
 	ReadingList       []*ReadingList `gorm:"many2many:reading_list_posts;" json:"reading_list"`
 	BookmarkedByUsers []*User        `gorm:"many2many:bookmarks;" json:"bookmarked_by_users"`
